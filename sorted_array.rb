@@ -3,7 +3,7 @@ class SortedArray
 
   def initialize(input_arr=[])
     @internal_arr = []
-    input_arr.each do |element|
+    input_arr.each do |element|  
       self.add(element)
     end
   end
@@ -129,20 +129,78 @@ class SortedArray
     # yield to each element
 
     # let's keep track of our index
+    i = 0
+    while i < @internal_arr.length
+      yield @internal_arr[i]
+      i += 1
+    end
+    @internal_arr
   end
+
+#   m=['a','b','c']
+# puts m.each_with_index{|v,i| i}
 
   def each_with_index &block
+    i = 0
+    each do |item|
+      yield item, i 
+      i += 1
+    end
   end
 
+#   a = [ "a", "b", "c", "d" ]
+# a.collect { |x| x + "!" }        #=> ["a!", "b!", "c!", "d!"]
+
   def map &block
+    arr = []
+    @internal_arr.each do |item|
+      arr << (yield item)
+    end
+    arr 
   end
 
   def map! &block
+    i = 0
+    @internal_arr.each do |item|
+      @internal_arr[i] = (yield item)
+      i += 1
+    end
   end
 
   def find &block
+    response = nil
+    @internal_arr.each do |item|
+      if (yield item) == true
+        response = true
+      end
+        if response == true
+          return item
+        end
+    end
+    response
   end
 
   def inject acc=nil, &block
+    if !acc.nil? 
+      acc = acc
+        self.each do |item| 
+          acc = yield(acc, item) 
+        end
+    else
+      acc = 0
+      self.each do |item| 
+        acc = yield(acc, item) 
+      end
+      # yield item
+    end
+    return acc
   end
-end
+end #CLASS
+#CLASS
+
+
+# arr = SortedArray.new([2, 3, 4, 7, 9])
+# arr.each{|el| el}
+
+# arr.internal_arr
+# puts arr.inject(5) {|acc, item| acc * item}
